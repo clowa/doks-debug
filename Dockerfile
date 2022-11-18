@@ -2,6 +2,10 @@
 # tooling compatibility reasons
 FROM debian:10-slim
 
+ARG BUILDPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+
 WORKDIR /root
 
 # use same dpkg path-exclude settings that come by default with ubuntu:focal
@@ -47,7 +51,7 @@ RUN apt-get update -qq && \
 
 RUN mkdir -p /etc/apt/keyrings && \
     curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
-    echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    echo "deb [arch=${TARGETARCH} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     apt-get update -qq && \
     apt-get install -y docker-ce
 
